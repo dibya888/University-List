@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winter 2027 Dossier — German Master's Programs</title>
+<meta name="description" content="A verified, filterable database of 34 German public university Master's programs for Winter 2027 applications.">
+
+<!-- Bootstrap (components/grid only; visuals overridden by style.css) -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#top" class="brand" style="text-decoration:none;">
+      <span class="brand-mark">DE</span>
+      <span class="brand-text">
+        <span class="brand-title">Winter 2027 Dossier</span>
+        <span class="brand-sub">German Master's program research</span>
+      </span>
+    </a>
+    <nav class="topnav">
+      <a href="#explorer">Explorer</a>
+      <a href="#rankings">Top 20</a>
+      <a href="#tiers">Tiers</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#methodology">Methodology</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="container-doc">
+      <div class="hero-eyebrow">Compiled from official university and DAAD sources</div>
+      <h1>A verified shortlist, built for one applicant.</h1>
+      <p class="hero-lede">
+        Thirty-four English-taught public university programs across Germany, checked one at a time against
+        official admissions pages — for a Software QA engineer with <strong>~2 years' industry experience</strong>,
+        targeting <strong>Applied CS, Software Engineering, Data Engineering, Cybersecurity, and Cloud Computing</strong>,
+        for the <strong>Winter 2027/28</strong> intake.
+      </p>
+
+      <div class="stat-strip" id="statStrip">
+        <div class="stat-item">
+          <div class="stat-num" data-stat="total">34</div>
+          <div class="stat-label">Verified programs</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-stat="safe">–</div>
+          <div class="stat-label">Safe tier</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-stat="moderate">–</div>
+          <div class="stat-label">Moderate tier</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-stat="ambitious">–</div>
+          <div class="stat-label">Ambitious tier</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-stat="states">–</div>
+          <div class="stat-label">German states covered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPLORER ============ -->
+  <section class="section" id="explorer">
+    <div class="container-doc">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Explorer</div>
+          <div class="section-desc">Search, filter, and sort the full dataset. Click any row for the complete record.</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search university or program…">
+        <div class="chip-toggle" id="tierFilter">
+          <button data-tier="all" class="active">All tiers</button>
+          <button data-tier="Safe">Safe</button>
+          <button data-tier="Moderate">Moderate</button>
+          <button data-tier="Ambitious">Ambitious</button>
+        </div>
+        <select id="stateFilter" class="form-select">
+          <option value="all">All states</option>
+        </select>
+        <select id="greFilter" class="form-select">
+          <option value="all">GRE — any</option>
+          <option value="no">No GRE needed</option>
+          <option value="yes">GRE required</option>
+        </select>
+        <span class="result-count" id="resultCount"></span>
+      </div>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th data-sort="university">University <span class="sort-arrow">↕</span></th>
+              <th data-sort="program">Program <span class="sort-arrow">↕</span></th>
+              <th data-sort="city">Location <span class="sort-arrow">↕</span></th>
+              <th data-sort="category">Tier <span class="sort-arrow">↕</span></th>
+              <th data-sort="matchScore">Match <span class="sort-arrow">↕</span></th>
+              <th data-sort="deadlineWinter2027">Winter '27 deadline <span class="sort-arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOP 20 ============ -->
+  <section class="section" id="rankings">
+    <div class="container-doc">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Top 20, by match score</div>
+          <div class="section-desc">The highest-scoring programs across the whole dataset, ranked. Ties broken by industry orientation.</div>
+        </div>
+      </div>
+      <div class="rank-list" id="rankList"></div>
+    </div>
+  </section>
+
+  <!-- ============ TIERS ============ -->
+  <section class="section" id="tiers">
+    <div class="container-doc">
+      <div class="section-head">
+        <div>
+          <div class="section-title">By tier</div>
+          <div class="section-desc">Safe, Moderate, and Ambitious — grouped by admission accessibility and industry fit, not prestige.</div>
+        </div>
+      </div>
+      <div class="tier-columns">
+        <div class="tier-col tier-col-safe">
+          <div class="tier-col-head">
+            <span class="tier-col-title">Safe</span>
+            <span class="tier-col-count" data-tier-count="Safe"></span>
+          </div>
+          <p class="tier-col-desc">Open or near-open admission, strong industry framing, tuition-free.</p>
+          <div id="tierSafe"></div>
+        </div>
+        <div class="tier-col tier-col-moderate">
+          <div class="tier-col-head">
+            <span class="tier-col-title">Moderate</span>
+            <span class="tier-col-count" data-tier-count="Moderate"></span>
+          </div>
+          <p class="tier-col-desc">Competitive or research-leaning, but genuinely reachable with preparation.</p>
+          <div id="tierModerate"></div>
+        </div>
+        <div class="tier-col tier-col-ambitious">
+          <div class="tier-col-head">
+            <span class="tier-col-title">Ambitious</span>
+            <span class="tier-col-count" data-tier-count="Ambitious"></span>
+          </div>
+          <p class="tier-col-desc">Research-university calibre. Only 7 of 34 programs land here — most candidates matching an industry-focused brief cluster in Safe/Moderate.</p>
+          <div id="tierAmbitious"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
+  <section class="section" id="roadmap">
+    <div class="container-doc">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Winter 2027 roadmap</div>
+          <div class="section-desc">From today through enrollment — built around where the projected deadlines actually cluster.</div>
+        </div>
+      </div>
+      <div class="roadmap" id="roadmapList"></div>
+    </div>
+  </section>
+
+  <!-- ============ METHODOLOGY / FOOTER ============ -->
+  <footer class="footer" id="methodology">
+    <div class="container-doc">
+      <div class="section-title" style="margin-bottom:16px;">Methodology &amp; caveats</div>
+      <p class="footer-note">
+        Every program was checked individually against its official university or DAAD page. Fields the research
+        could not confirm from an official source are marked <span class="unconfirmed">not officially confirmed</span>
+        rather than guessed — filter or search freely, but re-verify anything italicised before you rely on it.
+      </p>
+      <p class="footer-note">
+        Deadlines fall into three columns in the full dataset: a <strong>reference cycle</strong> (the most recently
+        confirmed date, often 2026), a <strong>Summer 2027</strong> projection, and the <strong>Winter 2027</strong>
+        target shown here — projected forward one year from a confirmed annual pattern where one existed. Treat
+        projected dates as planning estimates, not final answers; re-check the official page two to three months
+        before you actually apply.
+      </p>
+      <span class="footer-tag">Compiled July 2026 · 34 programs · sources: official university pages, DAAD, and named community sources where flagged</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ============ DETAIL MODAL ============ -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <div class="modal-eyebrow" id="modalEyebrow"></div>
+          <div class="modal-title-custom" id="modalTitle"></div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
