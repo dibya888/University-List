@@ -6,6 +6,21 @@
 <title>Winter 2027 Dossier — German Master's Programs</title>
 <meta name="description" content="A verified, filterable database of 34 German public university Master's programs for Winter 2027 applications.">
 
+<!-- Apply saved/system theme before first paint, so there's no flash of the wrong theme. -->
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem("theme-preference");
+    var theme = (saved === "light" || saved === "dark")
+      ? saved
+      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  } catch (e) {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+})();
+</script>
+
 <!-- Bootstrap (components/grid only; visuals overridden by style.css) -->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -23,13 +38,31 @@
         <span class="brand-sub">German Master's program research</span>
       </span>
     </a>
-    <nav class="topnav">
-      <a href="#explorer">Explorer</a>
-      <a href="#rankings">Top 20</a>
-      <a href="#tiers">Tiers</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#methodology">Methodology</a>
-    </nav>
+    <div class="topbar-right">
+      <nav class="topnav">
+        <a href="#explorer">Explorer</a>
+        <a href="#rankings">Top 20</a>
+        <a href="#tiers">Tiers</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#methodology">Methodology</a>
+      </nav>
+      <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <line x1="12" y1="2" x2="12" y2="4"></line>
+          <line x1="12" y1="20" x2="12" y2="22"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="2" y1="12" x2="4" y2="12"></line>
+          <line x1="20" y1="12" x2="22" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -65,8 +98,12 @@
           <div class="stat-label">Ambitious tier</div>
         </div>
         <div class="stat-item">
+          <div class="stat-num" data-stat="countries">–</div>
+          <div class="stat-label">Countries covered</div>
+        </div>
+        <div class="stat-item">
           <div class="stat-num" data-stat="states">–</div>
-          <div class="stat-label">German states covered</div>
+          <div class="stat-label">States / regions covered</div>
         </div>
       </div>
     </div>
@@ -90,6 +127,9 @@
           <button data-tier="Moderate">Moderate</button>
           <button data-tier="Ambitious">Ambitious</button>
         </div>
+        <select id="countryFilter" class="form-select">
+          <option value="all">All countries</option>
+        </select>
         <select id="stateFilter" class="form-select">
           <option value="all">All states</option>
         </select>
@@ -222,7 +262,14 @@
 </div>
 
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="js/data.js"></script>
+<script src="js/config.js"></script>
+
+<!-- Per-country datasets. Add new <script> tags here as countries are added
+     (see the instructions at the top of js/data/index.js). -->
+<script src="js/data/germany.js"></script>
+
+<script src="js/data/index.js"></script>
+<script src="js/theme.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@
   const state = {
     search: "",
     tier: "all",
+    country: "all",
     stateFilter: "all",
     greFilter: "all",
     sortKey: "matchScore",
@@ -45,15 +46,48 @@
   // ------------------------------------------------------------
   // Populate filter dropdowns
   // ------------------------------------------------------------
+  function populateCountryFilter() {
+    const countries = Array.from(new Set(PROGRAMS.map((p) => p.country).filter(Boolean))).sort();
+    const sel = document.getElementById("countryFilter");
+
+    // Only one country in the dataset today (Germany) — the filter still
+    // renders so it's ready the moment a second country is added.
+    countries.forEach((c) => {
+      const meta = typeof getCountryMeta === "function" ? getCountryMeta(c) : { flag: "", label: c };
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = meta.flag ? meta.flag + " " + meta.label : meta.label;
+      sel.appendChild(opt);
+    });
+  }
+
+  // Rebuilds the state/region dropdown, scoped to the currently
+  // selected country (or all countries if none is selected).
   function populateStateFilter() {
-    const states = Array.from(new Set(PROGRAMS.map((p) => p.state).filter(Boolean))).sort();
     const sel = document.getElementById("stateFilter");
+    const previous = state.stateFilter;
+
+    const pool =
+      state.country === "all" ? PROGRAMS : PROGRAMS.filter((p) => p.country === state.country);
+    const states = Array.from(new Set(pool.map((p) => p.state).filter(Boolean))).sort();
+
+    sel.innerHTML = '<option value="all">All states</option>';
     states.forEach((s) => {
       const opt = document.createElement("option");
       opt.value = s;
       opt.textContent = s;
       sel.appendChild(opt);
     });
+
+    // Keep the previous selection if it's still valid for this country;
+    // otherwise fall back to "all" rather than showing an empty result set.
+    if (states.includes(previous)) {
+      sel.value = previous;
+      state.stateFilter = previous;
+    } else {
+      sel.value = "all";
+      state.stateFilter = "all";
+    }
   }
 
   // ------------------------------------------------------------
@@ -64,11 +98,15 @@
     const moderate = PROGRAMS.filter((p) => tierBucket(p.category) === "Moderate").length;
     const ambitious = PROGRAMS.filter((p) => tierBucket(p.category) === "Ambitious").length;
     const states = new Set(PROGRAMS.map((p) => p.state).filter(Boolean)).size;
+    const countries = new Set(PROGRAMS.map((p) => p.country).filter(Boolean)).size;
 
+    document.querySelector('[data-stat="total"]').textContent = PROGRAMS.length;
     document.querySelector('[data-stat="safe"]').textContent = safe;
     document.querySelector('[data-stat="moderate"]').textContent = moderate;
     document.querySelector('[data-stat="ambitious"]').textContent = ambitious;
     document.querySelector('[data-stat="states"]').textContent = states;
+    const countriesEl = document.querySelector('[data-stat="countries"]');
+    if (countriesEl) countriesEl.textContent = countries;
   }
 
   // ------------------------------------------------------------
@@ -89,6 +127,10 @@
 
     if (state.tier !== "all") {
       rows = rows.filter((p) => tierBucket(p.category) === state.tier);
+    }
+
+    if (state.country !== "all") {
+      rows = rows.filter((p) => p.country === state.country);
     }
 
     if (state.stateFilter !== "all") {
@@ -175,7 +217,11 @@
     if (!p) return;
 
     const tier = tierBucket(p.category);
-    document.getElementById("modalEyebrow").textContent = p.city + ", " + p.state + " · " + tier + " tier";
+    const multiCountry = new Set(PROGRAMS.map((x) => x.country).filter(Boolean)).size > 1;
+    const countryMeta = typeof getCountryMeta === "function" ? getCountryMeta(p.country) : { label: p.country };
+    const locationBits = [p.city, p.state];
+    if (multiCountry && countryMeta.label) locationBits.push(countryMeta.label);
+    document.getElementById("modalEyebrow").textContent = locationBits.filter(Boolean).join(", ") + " · " + tier + " tier";
     document.getElementById("modalTitle").textContent = p.university;
 
     const linkHtml = (url) =>
@@ -189,6 +235,7 @@
       )}</strong> — ${escapeHtml(p.degree || "")}</p>
 
       <dl class="detail-grid">
+        ${fieldRow("Country", countryMeta.flag ? countryMeta.flag + " " + countryMeta.label : countryMeta.label)}
         ${fieldRow("Match score", p.matchScore + "/10")}
         ${fieldRow("Industry orientation", p.industryScore + "/10")}
         ${fieldRow("Research orientation", p.researchScore + "/10")}
@@ -406,6 +453,12 @@
       });
     });
 
+    document.getElementById("countryFilter").addEventListener("change", (e) => {
+      state.country = e.target.value;
+      populateStateFilter(); // state options depend on which country is selected
+      renderTable();
+    });
+
     document.getElementById("stateFilter").addEventListener("change", (e) => {
       state.stateFilter = e.target.value;
       renderTable();
@@ -435,6 +488,7 @@
   // Init
   // ------------------------------------------------------------
   function init() {
+    populateCountryFilter();
     populateStateFilter();
     renderStats();
     updateSortHeaders();
