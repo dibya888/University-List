@@ -507,6 +507,7 @@ a:hover { text-decoration: underline; }
 .tier-safe { background: var(--safe-tint); color: var(--safe); }
 .tier-moderate { background: var(--moderate-tint); color: var(--moderate); }
 .tier-ambitious { background: var(--ambitious-tint); color: var(--ambitious); }
+.tier-backup { background: var(--paper-deep); color: var(--ink-soft); }
 
 .empty-row td {
   text-align: center;
