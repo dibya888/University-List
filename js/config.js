@@ -18,6 +18,7 @@ const SITE_CONFIG = {
   countryMeta: {
     Germany: { flag: "🇩🇪", label: "Germany" },
     Switzerland: { flag: "🇨🇭", label: "Switzerland" },
+    Austria: { flag: "🇦🇹", label: "Austria" },
   },
 };
 
