@@ -17,6 +17,7 @@ const SITE_CONFIG = {
   // if a country has no entry here.
   countryMeta: {
     Germany: { flag: "🇩🇪", label: "Germany" },
+    Switzerland: { flag: "🇨🇭", label: "Switzerland" },
   },
 };
 

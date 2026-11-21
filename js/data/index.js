@@ -19,6 +19,7 @@
 
 const COUNTRY_DATASETS = [
   typeof COUNTRY_GERMANY !== "undefined" ? COUNTRY_GERMANY : [],
+  typeof COUNTRY_SWITZERLAND !== "undefined" ? COUNTRY_SWITZERLAND : [],
   // Add new countries here, e.g.:
   // typeof COUNTRY_USA !== "undefined" ? COUNTRY_USA : [],
 ];
